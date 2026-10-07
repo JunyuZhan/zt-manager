@@ -1,4 +1,5 @@
 pub mod agent;
+mod auth;
 pub mod central;
 mod commands;
 pub mod secure;
@@ -21,6 +22,9 @@ pub fn run() {
         .invoke_handler(tauri::generate_handler![
             commands::settings_load,
             commands::settings_save,
+            commands::auth_login,
+            commands::auth_logout,
+            commands::auth_status,
             commands::central_detect,
             commands::service_query,
             commands::service_control,
@@ -37,6 +41,8 @@ pub fn run() {
             commands::central_update_network,
             commands::central_members,
             commands::central_update_member,
+            commands::central_member_action,
+            commands::central_delete_member,
             commands::central_orgs,
             commands::controller_networks,
             commands::controller_network,
