@@ -1,5 +1,5 @@
 <div align="center">
-  <img src="src-tauri/icons/icon.png" alt="ZeroTier Manager logo" width="112">
+  <img src="public/zt-manager-icon.svg" alt="ZeroTier Manager logo" width="112">
   <h1>ZeroTier Manager</h1>
   <p><strong>Manage your ZeroTier networks from a native Windows desktop app.</strong></p>
   <p>

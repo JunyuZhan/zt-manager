@@ -20,8 +20,17 @@ export default function App() {
   return (
     <div className="flex h-screen bg-gray-100 text-gray-800">
       <aside className="w-56 bg-gray-900 text-gray-100 flex flex-col">
-        <div className="px-4 py-4 text-lg font-semibold border-b border-gray-700">
-          ZeroTier 管理器
+        <div className="flex items-center gap-3 px-4 py-4 border-b border-gray-700">
+          <img
+            src="/zt-manager-icon.svg"
+            alt=""
+            className="h-9 w-9 rounded-lg"
+          />
+          <span className="text-sm font-semibold leading-tight">
+            ZeroTier
+            <br />
+            管理器
+          </span>
         </div>
         <nav className="flex-1 p-2 space-y-1">
           {NAV.map((n) => (
