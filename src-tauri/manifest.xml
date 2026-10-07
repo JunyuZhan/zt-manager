@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<assembly xmlns="urn:schemas-microsoft-com:asm.v1" manifestVersion="1.0">
+  <dependency>
+    <dependentAssembly>
+      <assemblyIdentity type="win32" name="Microsoft.Windows.Common-Controls" version="6.0.0.0" processorArchitecture="*" publicKeyToken="6595b64144ccf1df" language="*" />
+    </dependentAssembly>
+  </dependency>
+  <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
+    <security>
+      <requestedPrivileges>
+        <!-- asInvoker: run unelevated so cargo run works (requireAdministrator caused os error 740).
+             Privileged ops elevate on demand: authtoken copy (agent.rs), service start/stop (service.rs).
+             NOTE: keep this file ASCII-only; non-ASCII bytes break manifest embedding (SxS config error).
+             NOTE: Common-Controls v6 dependency is required for TaskDialogIndirect (comctl32 v5 lacks it). -->
+        <requestedExecutionLevel level="asInvoker" uiAccess="false" />
+      </requestedPrivileges>
+    </security>
+  </trustInfo>
+</assembly>

@@ -1,0 +1,47 @@
+[package]
+name = "zt-manager"
+version = "0.1.0"
+description = "A Tauri App"
+authors = ["you"]
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+# The `_lib` suffix may seem redundant but it is necessary
+# to make the lib name unique and wouldn't conflict with the bin name.
+# This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
+name = "zt_manager_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+# GUI 入口无需测试 harness；manifest 要求管理员权限（requireAdministrator），
+# 否则 `cargo test` 执行 bin 测试时会因提权（os error 740）失败。
+[[bin]]
+name = "zt-manager"
+path = "src/main.rs"
+test = false
+bench = false
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+# 见下方 [dependencies] 中 indexmap 的说明（构建期依赖空间需同样启用 std）
+indexmap = { version = "1.9", features = ["std"] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-opener = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+reqwest = { version = "0.12", features = ["json"] }
+anyhow = "1"
+# 兼容性垫片（非本项目直接使用）：schemars 0.8.22 通过 tauri-utils / tauri-build
+# 引入 indexmap 1.9.3，并将其别名为 `type Map<K, V> = indexmap::IndexMap<K, V>`。
+# indexmap 1.x 中 `S = RandomState` 默认值仅在 has_std 生效时存在；若未启用 std 特性，
+# 其 build.rs 需靠 autocfg 探测 sysroot std，在新版 rustc 上探测不稳定，导致编译出
+# 三参无默认值的 IndexMap，进而触发 E0107（struct takes 3 generic arguments but 2 ...）。
+# 此处显式启用 std 特性以稳定产出 has_std。待依赖链不再使用 schemars 0.8 / indexmap 1.x
+# 后可移除本行。
+indexmap = { version = "1.9", features = ["std"] }
+
+
+# 发行 profile 已上移至 workspace 根 Cargo.toml
