@@ -11,7 +11,7 @@ fn token_cache_path() -> PathBuf {
     let base = std::env::var("LOCALAPPDATA")
         .map(PathBuf::from)
         .unwrap_or_else(|_| PathBuf::from("."));
-    base.join("com.zhany.ztmanager").join("authtoken.dpapi")
+    base.join("com.ztmanager.app").join("authtoken.dpapi")
 }
 
 fn direct_token() -> Option<String> {

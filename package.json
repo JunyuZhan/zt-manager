@@ -1,7 +1,9 @@
 {
   "name": "zt-manager",
+  "description": "Windows desktop manager for ZeroTier networks and local controllers",
   "private": true,
   "version": "0.1.0",
+  "license": "MIT",
   "type": "module",
   "scripts": {
     "dev": "vite",
