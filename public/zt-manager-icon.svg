@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512" fill="none">
+  <defs>
+    <linearGradient id="route-a" x1="110" y1="350" x2="340" y2="160" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#32D6CE"/>
+      <stop offset=".55" stop-color="#55B8EF"/>
+      <stop offset="1" stop-color="#847AFF"/>
+    </linearGradient>
+    <linearGradient id="route-b" x1="185" y1="352" x2="407" y2="158" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#847AFF"/>
+      <stop offset=".52" stop-color="#B18AFF"/>
+      <stop offset="1" stop-color="#FFBF69"/>
+    </linearGradient>
+    <linearGradient id="core" x1="222" y1="220" x2="290" y2="290" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F6FBFF"/>
+      <stop offset="1" stop-color="#B9D9FF"/>
+    </linearGradient>
+    <radialGradient id="background" cx="0" cy="0" r="1" gradientTransform="matrix(0 470 -470 0 256 42)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#202D49"/>
+      <stop offset="1" stop-color="#0C1222"/>
+    </radialGradient>
+    <filter id="glow" x="64" y="74" width="384" height="364" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
+      <feGaussianBlur stdDeviation="13"/>
+    </filter>
+  </defs>
+
+  <rect width="512" height="512" rx="112" fill="url(#background)"/>
+  <path d="M64 152V116C64 87.3 87.3 64 116 64h36M360 64h36c28.7 0 52 23.3 52 52v36M448 360v36c0 28.7-23.3 52-52 52h-36M152 448h-36c-28.7 0-52-23.3-52-52v-36" stroke="#A9C3F2" stroke-opacity=".13" stroke-width="2"/>
+
+  <g filter="url(#glow)" opacity=".48">
+    <path d="M151 326c-41-42-39-109 3-151 43-43 112-43 155 0l51 51" stroke="url(#route-a)" stroke-linecap="round" stroke-width="38"/>
+    <path d="M361 186c41 42 39 109-3 151-43 43-112 43-155 0l-51-51" stroke="url(#route-b)" stroke-linecap="round" stroke-width="38"/>
+  </g>
+
+  <path d="M151 326c-41-42-39-109 3-151 43-43 112-43 155 0l51 51" stroke="url(#route-a)" stroke-linecap="round" stroke-width="25"/>
+  <path d="M361 186c41 42 39 109-3 151-43 43-112 43-155 0l-51-51" stroke="url(#route-b)" stroke-linecap="round" stroke-width="25"/>
+
+  <circle cx="256" cy="256" r="52" fill="#101A2C" stroke="#FFFFFF" stroke-opacity=".12" stroke-width="2"/>
+  <circle cx="256" cy="256" r="31" fill="url(#core)"/>
+  <circle cx="256" cy="256" r="9" fill="#5575A8"/>
+
+  <circle cx="151" cy="326" r="23" fill="#101A2C" stroke="#61E1DA" stroke-width="8"/>
+  <circle cx="151" cy="326" r="6" fill="#61E1DA"/>
+  <circle cx="361" cy="186" r="23" fill="#101A2C" stroke="#FFC777" stroke-width="8"/>
+  <circle cx="361" cy="186" r="6" fill="#FFC777"/>
+</svg>
