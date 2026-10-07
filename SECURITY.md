@@ -1,5 +1,7 @@
 # Security Policy
 
+中文版：[SECURITY.zh-CN.md](SECURITY.zh-CN.md)。
+
 ## Supported versions
 
 Security fixes are currently considered for the latest version of the default branch. Older releases are not covered by a formal support policy.
