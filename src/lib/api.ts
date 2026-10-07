@@ -20,10 +20,26 @@ export interface PingResult {
   latencyMs: number;
 }
 
+export interface AuthStatus {
+  loggedIn: boolean;
+  email?: string;
+  mode?: "central" | "keycloak";
+  expiresAt?: number | null;
+  /** 已配置 token 粘贴模式（未登录会话时的备用认证） */
+  tokenConfigured?: boolean;
+}
+
+export type MemberAction = "authorize" | "deauthorize" | "reject";
+
 export const api = {
   settingsLoad: () => invoke<Settings>("settings_load"),
   settingsSave: (settings: Settings) => invoke<void>("settings_save", { settings }),
   centralDetect: () => invoke<string>("central_detect"),
+
+  authLogin: (email: string, password: string, otp?: string) =>
+    invoke<any>("auth_login", { email, password, otp: otp ?? null }),
+  authLogout: () => invoke<void>("auth_logout"),
+  authStatus: () => invoke<AuthStatus>("auth_status"),
 
   serviceQuery: () => invoke<ServiceState>("service_query"),
   serviceControl: (action: "start" | "stop" | "restart") =>
@@ -48,6 +64,10 @@ export const api = {
   centralMembers: (nwid: string) => invoke<any>("central_members", { nwid }),
   centralUpdateMember: (nwid: string, mid: string, body: any) =>
     invoke<any>("central_update_member", { nwid, mid, body }),
+  centralMemberAction: (nwid: string, mid: string, action: MemberAction) =>
+    invoke<any>("central_member_action", { nwid, mid, action }),
+  centralDeleteMember: (nwid: string, mid: string) =>
+    invoke<any>("central_delete_member", { nwid, mid }),
   centralOrgs: () => invoke<any>("central_orgs"),
 
   controllerNetworks: () => invoke<any>("controller_networks"),

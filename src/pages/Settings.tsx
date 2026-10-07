@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { api, type Settings } from "../lib/api";
+import { openUrl } from "@tauri-apps/plugin-opener";
+import { api, type AuthStatus, type Settings } from "../lib/api";
+
+const REGISTER_URL =
+  "https://accounts.zerotier.com/realms/zerotier/protocol/openid-connect/registrations" +
+  "?client_id=zt-central" +
+  "&redirect_uri=https%3A%2F%2Fmy.zerotier.com%2F" +
+  "&response_type=code&scope=openid";
 
 export default function Settings() {
   const [settings, setSettings] = useState<Settings>({
@@ -12,12 +19,65 @@ export default function Settings() {
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
+  // 登录区状态
+  const [auth, setAuth] = useState<AuthStatus>({ loggedIn: false });
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [needOtp, setNeedOtp] = useState(false);
+  const [loggingIn, setLoggingIn] = useState(false);
+
+  async function refreshAuth() {
+    try {
+      setAuth(await api.authStatus());
+    } catch {
+      /* 忽略状态查询失败 */
+    }
+  }
+
   useEffect(() => {
     api
       .settingsLoad()
       .then(setSettings)
       .catch((e) => setErr(String(e)));
+    refreshAuth();
   }, []);
+
+  async function login() {
+    setErr(null);
+    setMsg(null);
+    setLoggingIn(true);
+    try {
+      const r = await api.authLogin(email, password, needOtp ? otp : undefined);
+      if (r?.needOtp) {
+        setNeedOtp(true);
+        setMsg("该账号开启了两步验证，请输入验证码");
+      } else {
+        setNeedOtp(false);
+        setOtp("");
+        setPassword("");
+        setMsg(
+          `登录成功（${r?.mode === "central" ? "New Central" : "ZeroTier 账号"} · ${r?.email}）`,
+        );
+        refreshAuth();
+      }
+    } catch (e: any) {
+      setErr(String(e));
+    } finally {
+      setLoggingIn(false);
+    }
+  }
+
+  async function logout() {
+    setErr(null);
+    try {
+      api.authLogout();
+      await refreshAuth();
+      setMsg("已退出登录");
+    } catch (e: any) {
+      setErr(String(e));
+    }
+  }
 
   async function save() {
     setMsg(null);
@@ -55,9 +115,81 @@ export default function Settings() {
       )}
 
       <section className="bg-white rounded shadow p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-semibold">ZeroTier 账号登录</h2>
+          {auth.loggedIn && (
+            <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded">
+              {auth.mode === "central" ? "New Central" : "ZeroTier 账号"} ·{" "}
+              {auth.email}
+            </span>
+          )}
+        </div>
+
+        {auth.loggedIn ? (
+          <div className="flex items-center justify-between">
+            <p className="text-sm text-gray-500">
+              已登录，Token 与网络管理操作将自动使用该会话（过期前会自动刷新）。
+            </p>
+            <button
+              onClick={logout}
+              className="px-3 py-1.5 bg-gray-200 rounded hover:bg-gray-300 text-sm"
+            >
+              退出登录
+            </button>
+          </div>
+        ) : (
+          <div className="space-y-3">
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="账号邮箱"
+              className="border rounded px-2 py-1 w-full"
+            />
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && login()}
+              placeholder="密码"
+              className="border rounded px-2 py-1 w-full"
+            />
+            {needOtp && (
+              <input
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && login()}
+                placeholder="两步验证码（6 位）"
+                className="border rounded px-2 py-1 w-full font-mono"
+              />
+            )}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={login}
+                disabled={loggingIn || !email || !password}
+                className="px-4 py-1.5 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:opacity-40"
+              >
+                {loggingIn ? "登录中…" : needOtp ? "验证并登录" : "登录"}
+              </button>
+              <button
+                onClick={() => openUrl(REGISTER_URL)}
+                className="text-sm text-blue-600 hover:underline"
+              >
+                注册账号
+              </button>
+            </div>
+            <p className="text-xs text-gray-400">
+              自动适配两种登录方式：先尝试 New Central（central.zerotier.com），
+              失败则回退 ZeroTier 账号（accounts.zerotier.com）。凭据仅用于登录，不落盘。
+            </p>
+          </div>
+        )}
+      </section>
+
+      <section className="bg-white rounded shadow p-4 space-y-4">
         <div>
           <label className="block text-sm text-gray-500 mb-1">
-            Central API Token
+            Central API Token（备选，未登录会话时使用）
           </label>
           <input
             type="password"
